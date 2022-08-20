@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "550688986544",
+    "project_id": "graduation-5359b",
+    "storage_bucket": "graduation-5359b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:550688986544:android:fb8368f214dcf4eb507275",
+        "android_client_info": {
+          "package_name": "graduation.gachon.smartinsole"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "550688986544-niv1jk2i0aafirnfr06ql2tl2laj1vln.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDglW57tUSIdyGCN6WlVWjNzDKvmZsl4-U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "550688986544-niv1jk2i0aafirnfr06ql2tl2laj1vln.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
