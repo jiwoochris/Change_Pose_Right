@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "550688986544",
+    "project_id": "graduation-5359b",
+    "storage_bucket": "graduation-5359b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:550688986544:android:fb8368f214dcf4eb507275",
+        "android_client_info": {
+          "package_name": "graduation.gachon.smartinsole"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "550688986544-b4tg7r6noa4i1rn6hppg261vu73ab625.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "graduation.gachon.smartinsole",
+            "certificate_hash": "8e5359a17a1ea15cf8a20b7aa2f25088ef26f978"
+          }
+        },
+        {
+          "client_id": "550688986544-l27pe0gbo684nphd1p5vp6g6pu7emiao.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "graduation.gachon.smartinsole",
+            "certificate_hash": "abe82b3fd2f23a6c7a794239d48fdb39a3245a04"
+          }
+        },
+        {
+          "client_id": "550688986544-niv1jk2i0aafirnfr06ql2tl2laj1vln.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDglW57tUSIdyGCN6WlVWjNzDKvmZsl4-U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "550688986544-niv1jk2i0aafirnfr06ql2tl2laj1vln.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
