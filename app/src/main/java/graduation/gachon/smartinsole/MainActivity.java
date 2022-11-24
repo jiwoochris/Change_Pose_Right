@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                             //updateUI(user);
                             Toast.makeText(getApplicationContext(), "Complete", Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(getApplicationContext(), MainMenuActivity.class);
+
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.

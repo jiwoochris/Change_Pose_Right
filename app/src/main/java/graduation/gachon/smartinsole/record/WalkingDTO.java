@@ -20,6 +20,7 @@ public class WalkingDTO {
                 '}';
     }
 
+
     public WalkingDTO(double longitude, double latitude, double altitude, String time, String timer, int step) {
         this.longitude = longitude;
         this.latitude = latitude;

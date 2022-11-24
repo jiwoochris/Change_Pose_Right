@@ -83,6 +83,7 @@ public class MainMenuGoFragment extends Fragment {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent intent = new Intent(getContext(), StartActivity.class);
                 startActivity(intent);
             }

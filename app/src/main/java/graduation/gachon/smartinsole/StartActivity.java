@@ -28,6 +28,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +41,9 @@ import graduation.gachon.smartinsole.record.WalkingRecord;
 
 
 public class StartActivity extends AppCompatActivity implements SensorEventListener {
+
+    private Sensor stepCountSensor;
+    private SensorManager sensorManager;
 
     private TextView locationText;
     private TextView walkingText;
@@ -54,15 +60,13 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
     long TimeBuff = 0L;         // 스탑워치 일시정지 버튼 눌렀을 때의 총 시간
     long UpdateTime = 0L;       // 스탑워치 일시정지 버튼 눌렀을 때의 총 시간 + 시작 버튼 누르고 난 이후 부터의 시간 = 총 시간
 
-    SensorManager sensorManager;
-    Sensor stepCountSensor;
 
     // 현재 걸음 수
     private int currentSteps = 0;
 
     //흐른 시간
     private String time;
-
+    private boolean startFlag = false;
     //현재 날짜 및 시간
     Date mDate;
     SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -91,20 +95,9 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
         handler.postDelayed(runnable, 0);
 
 
-        // 활동 퍼미션 체크
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED) {
-
-            ActivityCompat.requestPermissions(StartActivity.this, new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);
-        }
-
-        // 걸음 센서 연결
-        // * 옵션
-        // - TYPE_STEP_DETECTOR:  리턴 값이 무조건 1, 앱이 종료되면 다시 0부터 시작
-        // - TYPE_STEP_COUNTER : 앱 종료와 관계없이 계속 기존의 값을 가지고 있다가 1씩 증가한 값을 리턴
-        //
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         stepCountSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+
 
         startLocationService();
 
@@ -127,7 +120,6 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
                 }
             }
         });
-
 
         // 스탑워치 스탑 버튼
         timerStop.setOnClickListener(new View.OnClickListener() {
@@ -160,53 +152,58 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
 
         public void run() {
 
-            // 디바이스를 부팅한 후 부터 현재까지 시간 - 시작 버튼을 누른 시간
-            MillisecondTime = SystemClock.uptimeMillis() - StartTime;
+            if(!startFlag) {
+                // 디바이스를 부팅한 후 부터 현재까지 시간 - 시작 버튼을 누른 시간
+                MillisecondTime = SystemClock.uptimeMillis() - StartTime;
 
-            // 스탑워치 일시정지 버튼 눌렀을 때의 총 시간 + 시작 버튼 누르고 난 이후 부터의 시간 = 총 시간
-            UpdateTime = TimeBuff + MillisecondTime;
+                // 스탑워치 일시정지 버튼 눌렀을 때의 총 시간 + 시작 버튼 누르고 난 이후 부터의 시간 = 총 시간
+                UpdateTime = TimeBuff + MillisecondTime;
 
-            Seconds = (int) (UpdateTime / 1000);
+                Seconds = (int) (UpdateTime / 1000);
 
-            Minutes = Seconds / 60;
+                Minutes = Seconds / 60;
 
-            Seconds = Seconds % 60;
+                Seconds = Seconds % 60;
 
-            MilliSeconds = (int) (UpdateTime % 1000);
+                MilliSeconds = (int) (UpdateTime % 1000);
 
-            // TextView에 UpdateTime을 갱신해준다
-            time = Minutes + ":" + String.format("%02d", Seconds);
-            timerText.setText(time);
+                // TextView에 UpdateTime을 갱신해준다
+                time = Minutes + ":" + String.format("%02d", Seconds);
+                timerText.setText(time);
 
-            handler.postDelayed(this, 0);
+                handler.postDelayed(this, 0);
+            }
         }
 
     };
 
     public void startLocationService() {
 
-        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // 가장최근 위치정보 가져오기
         if (Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(StartActivity.this, new String[]{
-                    android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
 
-            System.out.println(ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION));
-            System.out.println("EROROROROR");
+
+            ActivityCompat.requestPermissions(StartActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    0);
         } else {
-            // 가장최근 위치정보 가져오기
+
             Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
             if (location != null && !flag) {
                 String provider = location.getProvider();
                 double longitude = location.getLongitude();
                 double latitude = location.getLatitude();
                 double altitude = location.getAltitude();
 
+
                 locationText.setText("위치정보 : " + provider + "\n" +
                         "위도 : " + longitude + "\n" +
                         "경도 : " + latitude + "\n" +
                         "고도  : " + altitude);
-
+            }
                 // 위치정보를 원하는 시간, 거리마다 갱신해준다.
                 manager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                         1000, //1초마다
@@ -216,8 +213,6 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
                         1000,
                         0,
                         gpsLocationListener);
-            }
-
 
         }
     }
@@ -254,21 +249,21 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
     public void onStart() {
         super.onStart();
         if (stepCountSensor != null) {
-            // 센서 속도 설정
-            // * 옵션
-            // - SENSOR_DELAY_NORMAL: 20,000 초 딜레이
-            // - SENSOR_DELAY_UI: 6,000 초 딜레이
-            // - SENSOR_DELAY_GAME: 20,000 초 딜레이
-            // - SENSOR_DELAY_FASTEST: 딜레이 없음
-            //
             sensorManager.registerListener(this, stepCountSensor, SensorManager.SENSOR_DELAY_FASTEST);
         }
     }
 
+    public void onStop() {
+        super.onStop();
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(this);
+        }
+    }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
         // 걸음 센서 이벤트 발생시
+        System.out.println("sensor change");
         if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
 
             if (event.values[0] == 1.0f && !flag) {
@@ -286,10 +281,12 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private String getTime() {
-        long mNow = System.currentTimeMillis();
-        mDate = new Date(mNow);
-        return mFormat.format(mDate);
+
+        LocalDateTime now = LocalDateTime.now();
+
+        return now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
 }
