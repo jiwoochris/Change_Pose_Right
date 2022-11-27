@@ -218,6 +218,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
     }
 
     final LocationListener gpsLocationListener = new LocationListener() {
+        @RequiresApi(api = Build.VERSION_CODES.O)
         public void onLocationChanged(Location location) {
 
             // 위치 리스너는 위치정보를 전달할 때 호출되므로 onLocationChanged()메소드 안에 위지청보를 처리를 작업을 구현
