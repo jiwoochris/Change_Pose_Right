@@ -264,7 +264,6 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
     @Override
     public void onSensorChanged(SensorEvent event) {
         // 걸음 센서 이벤트 발생시
-        System.out.println("sensor change");
         if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
 
             if (event.values[0] == 1.0f && !flag) {
