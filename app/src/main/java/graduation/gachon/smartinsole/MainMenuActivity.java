@@ -41,7 +41,6 @@ public class MainMenuActivity extends AppCompatActivity {
                         Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)
 
         ) {
-            System.out.println("fail sensor");
             System.out.println(ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACTIVITY_RECOGNITION));
             System.out.println(ContextCompat.checkSelfPermission(this,
