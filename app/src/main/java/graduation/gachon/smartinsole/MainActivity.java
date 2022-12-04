@@ -1,6 +1,8 @@
 package graduation.gachon.smartinsole;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -106,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
                             //updateUI(user);
                             Toast.makeText(getApplicationContext(), "Complete", Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(getApplicationContext(), MainMenuActivity.class);
-
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.

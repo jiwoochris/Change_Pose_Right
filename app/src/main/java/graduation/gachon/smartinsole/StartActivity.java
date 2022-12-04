@@ -1,6 +1,7 @@
 package graduation.gachon.smartinsole;
 
 import android.Manifest;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -24,9 +25,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -36,8 +42,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 
+import graduation.gachon.smartinsole.record.WalkingBluetoothDTO;
+import graduation.gachon.smartinsole.record.WalkingBluetoothRecord;
 import graduation.gachon.smartinsole.record.WalkingDTO;
 import graduation.gachon.smartinsole.record.WalkingRecord;
+import graduation.gachon.smartinsole.record.WalkingTotalDTO;
 
 
 public class StartActivity extends AppCompatActivity implements SensorEventListener {
@@ -65,22 +74,22 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
     private int currentSteps = 0;
 
     //흐른 시간
-    private String time;
-    private boolean startFlag = false;
+    public static String time;
+    public static  boolean startFlag = false;
     //현재 날짜 및 시간
     Date mDate;
     SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     WalkingRecord walkingRecord = new WalkingRecord();
 
-    private boolean flag = false;
+    public static boolean flag = false;
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-
+        flag = true;
         handler = new Handler();
 
         locationText = (TextView) findViewById(R.id.loactionText);
@@ -107,7 +116,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
             public void onClick(View view) {
 
                 // 스탑워치 일시정지 버튼 눌렀을 때의 총 시간
-                if (!flag) {
+                if (flag) {
                     TimeBuff += MillisecondTime;
                     flag = !flag;
                     // Runnable 객체 제거
@@ -129,19 +138,42 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
                 TimeBuff += MillisecondTime;
                 // Runnable 객체 제거
                 handler.removeCallbacks(runnable);
-                ArrayList<WalkingDTO> record = walkingRecord.getRecord();
+                ArrayList<WalkingTotalDTO> record = walkingRecord.getRecord();
+                ArrayList<WalkingBluetoothDTO> rightRecord = WalkingBluetoothRecord.rightRecord;
+                ArrayList<WalkingBluetoothDTO> leftRecord = WalkingBluetoothRecord.leftRecord;
 
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                FirebaseUser user = mAuth.getCurrentUser();
 
                 mDatabase = FirebaseDatabase.getInstance().getReference();
-                //데이터베이스에 정보 저장
-                mDatabase.child("users")//유저이름
+//                데이터베이스에 정보 저장
+                mDatabase.child(user.getUid())//유저이름
                         .child("record")
-                        .child(record.get(0).getTime().substring(0, 4))//연도
-                        .child(record.get(0).getTime().substring(5, 7))//월
-                        .child(record.get(0).getTime().substring(8, 10))//일
-                        .child(record.get(0).getTime().substring(10) + " ~ " + record.get(record.size() - 1).getTime().substring(10))//시작 시간
+                        .child(record.get(0).getRecord().getTime().substring(0, 4))//연도
+                        .child(record.get(0).getRecord().getTime().substring(5, 7))//월
+                        .child(record.get(0).getRecord().getTime().substring(8, 10))//일
+                        .child(record.get(0).getRecord().getTime().substring(10) + " ~ " + record.get(record.size() - 1).getRecord().getTime().substring(10))//시작 시간
+                        .child("PD")
                         .setValue(record);//데이터
-
+//
+//                mDatabase.child(user.getUid())//유저이름
+//                        .child("record")
+//                        .child(record.get(0).getTime().substring(0, 4))//연도
+//                        .child(record.get(0).getTime().substring(5, 7))//월
+//                        .child(record.get(0).getTime().substring(8, 10))//일
+//                        .child(record.get(0).getTime().substring(10) + " ~ " + record.get(record.size() - 1).getTime().substring(10))//시작 시간
+//                        .child("BDLeft")
+//                        .setValue(leftRecord);//데이터
+//
+//                mDatabase.child(user.getUid())//유저이름
+//                        .child("record")
+//                        .child(record.get(0).getTime().substring(0, 4))//연도
+//                        .child(record.get(0).getTime().substring(5, 7))//월
+//                        .child(record.get(0).getTime().substring(8, 10))//일
+//                        .child(record.get(0).getTime().substring(10) + " ~ " + record.get(record.size() - 1).getTime().substring(10))//시작 시간
+//                        .child("BDRight")
+//                        .setValue(rightRecord);//데이터
+                flag = !flag;
             }
         });
 
@@ -266,7 +298,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
         // 걸음 센서 이벤트 발생시
         if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
 
-            if (event.values[0] == 1.0f && !flag) {
+            if (event.values[0] == 1.0f && flag) {
                 // 센서 이벤트가 발생할때 마다 걸음수 증가
                 currentSteps++;
                 walkingText.setText(String.valueOf(currentSteps));
@@ -288,5 +320,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
 
         return now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
+
+
 
 }

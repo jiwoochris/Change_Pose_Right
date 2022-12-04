@@ -1,5 +1,7 @@
 package graduation.gachon.smartinsole.record;
 
+import java.util.ArrayList;
+
 public class WalkingDTO {
     private double longitude; //위도
     private double latitude; //경도
@@ -19,7 +21,6 @@ public class WalkingDTO {
                 ", step=" + step +
                 '}';
     }
-
 
     public WalkingDTO(double longitude, double latitude, double altitude, String time, String timer, int step) {
         this.longitude = longitude;

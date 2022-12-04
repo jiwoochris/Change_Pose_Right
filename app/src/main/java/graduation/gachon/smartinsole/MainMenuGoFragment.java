@@ -34,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import graduation.gachon.smartinsole.bluetooth.BluetoothSettingActivity;
 import graduation.gachon.smartinsole.record.WalkingDTO;
 import graduation.gachon.smartinsole.record.WalkingRecord;
 
@@ -45,6 +46,7 @@ import graduation.gachon.smartinsole.record.WalkingRecord;
 public class MainMenuGoFragment extends Fragment {
 
     private Button startButton;
+    private Button bluetoothButton;
 
 
 
@@ -79,12 +81,24 @@ public class MainMenuGoFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_main_menu_go, container, false);
         startButton = v.findViewById(R.id.startButton);
+        bluetoothButton = v.findViewById(R.id.BluetoothButton);
 
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent intent = new Intent(getContext(), StartActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        bluetoothButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                System.out.println("블루투누스스ㅡ" +
+                        "");
+                Intent intent = new Intent(getContext(), BluetoothSettingActivity.class);
                 startActivity(intent);
             }
         });
