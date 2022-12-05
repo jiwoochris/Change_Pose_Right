@@ -8,6 +8,7 @@ public class WalkingRecord {
 
     public void addRecord(WalkingDTO walking){
         record.add(new WalkingTotalDTO(walking, WalkingBluetoothRecord.getLeftRecord(),WalkingBluetoothRecord.getRightRecord()));
+        WalkingBluetoothRecord.clear();
     }
 
     public ArrayList<WalkingTotalDTO> getRecord() {

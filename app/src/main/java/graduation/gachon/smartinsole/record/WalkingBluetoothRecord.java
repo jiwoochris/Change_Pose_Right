@@ -13,4 +13,9 @@ public class WalkingBluetoothRecord {
     public static ArrayList<WalkingBluetoothDTO> getRightRecord() {
         return rightRecord;
     }
+
+    public static void clear(){
+        leftRecord.clear();
+        rightRecord.clear();
+    }
 }
