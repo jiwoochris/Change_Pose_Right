@@ -1,7 +1,5 @@
 package graduation.gachon.smartinsole;
 
-import android.Manifest;
-import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -17,7 +15,6 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
@@ -30,23 +27,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Timer;
 
 import graduation.gachon.smartinsole.record.WalkingBluetoothDTO;
 import graduation.gachon.smartinsole.record.WalkingBluetoothRecord;
 import graduation.gachon.smartinsole.record.WalkingDTO;
 import graduation.gachon.smartinsole.record.WalkingRecord;
-import graduation.gachon.smartinsole.record.WalkingTotalDTO;
 
 
 public class StartActivity extends AppCompatActivity implements SensorEventListener {
@@ -138,41 +128,44 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
                 TimeBuff += MillisecondTime;
                 // Runnable 객체 제거
                 handler.removeCallbacks(runnable);
-                ArrayList<WalkingTotalDTO> record = walkingRecord.getRecord();
+
+                ArrayList<WalkingDTO> record = walkingRecord.getRecord();
                 ArrayList<WalkingBluetoothDTO> rightRecord = WalkingBluetoothRecord.rightRecord;
                 ArrayList<WalkingBluetoothDTO> leftRecord = WalkingBluetoothRecord.leftRecord;
 
-                FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                FirebaseUser user = mAuth.getCurrentUser();
+//                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+//                FirebaseUser user = mAuth.getCurrentUser();
 
-                mDatabase = FirebaseDatabase.getInstance().getReference();
+//                mDatabase = FirebaseDatabase.getInstance().getReference();
 //                데이터베이스에 정보 저장
-                mDatabase.child(user.getUid())//유저이름
+//                mDatabase.child(user.getUid())//유저이름
+                mDatabase.child("test")//유저이름
                         .child("record")
-                        .child(record.get(0).getRecord().getTime().substring(0, 4))//연도
-                        .child(record.get(0).getRecord().getTime().substring(5, 7))//월
-                        .child(record.get(0).getRecord().getTime().substring(8, 10))//일
-                        .child(record.get(0).getRecord().getTime().substring(10) + " ~ " + record.get(record.size() - 1).getRecord().getTime().substring(10))//시작 시간
+                        .child(record.get(0).getTime().substring(0, 4))//연도
+                        .child(record.get(0).getTime().substring(5, 7))//월
+                        .child(record.get(0).getTime().substring(8, 10))//일
+                        .child(record.get(0).getTime().substring(10) + " ~ " + record.get(record.size() - 1).getTime().substring(10))//시작 시간
                         .child("PD")
                         .setValue(record);//데이터
-//
-//                mDatabase.child(user.getUid())//유저이름
-//                        .child("record")
-//                        .child(record.get(0).getTime().substring(0, 4))//연도
-//                        .child(record.get(0).getTime().substring(5, 7))//월
-//                        .child(record.get(0).getTime().substring(8, 10))//일
-//                        .child(record.get(0).getTime().substring(10) + " ~ " + record.get(record.size() - 1).getTime().substring(10))//시작 시간
-//                        .child("BDLeft")
-//                        .setValue(leftRecord);//데이터
-//
-//                mDatabase.child(user.getUid())//유저이름
-//                        .child("record")
-//                        .child(record.get(0).getTime().substring(0, 4))//연도
-//                        .child(record.get(0).getTime().substring(5, 7))//월
-//                        .child(record.get(0).getTime().substring(8, 10))//일
-//                        .child(record.get(0).getTime().substring(10) + " ~ " + record.get(record.size() - 1).getTime().substring(10))//시작 시간
-//                        .child("BDRight")
-//                        .setValue(rightRecord);//데이터
+
+                mDatabase.child("test")//유저이름
+                        .child("record")
+                        .child(record.get(0).getTime().substring(0, 4))//연도
+                        .child(record.get(0).getTime().substring(5, 7))//월
+                        .child(record.get(0).getTime().substring(8, 10))//일
+                        .child(record.get(0).getTime().substring(10) + " ~ " + record.get(record.size() - 1).getTime().substring(10))//시작 시간
+                        .child("BDLeft")
+                        .setValue(leftRecord);//데이터
+
+                mDatabase.child("test")//유저이름
+                        .child("record")
+                        .child(record.get(0).getTime().substring(0, 4))//연도
+                        .child(record.get(0).getTime().substring(5, 7))//월
+                        .child(record.get(0).getTime().substring(8, 10))//일
+                        .child(record.get(0).getTime().substring(10) + " ~ " + record.get(record.size() - 1).getTime().substring(10))//시작 시간
+                        .child("BDRight")
+                        .setValue(rightRecord);//데이터
+
                 flag = !flag;
             }
         });
@@ -224,7 +217,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
 
             Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-            if (location != null && !flag) {
+            if (location != null && flag) {
                 String provider = location.getProvider();
                 double longitude = location.getLongitude();
                 double latitude = location.getLatitude();
@@ -236,6 +229,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
                         "경도 : " + latitude + "\n" +
                         "고도  : " + altitude);
             }
+
                 // 위치정보를 원하는 시간, 거리마다 갱신해준다.
                 manager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                         1000, //1초마다
@@ -249,20 +243,22 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
         }
     }
 
-    final LocationListener gpsLocationListener = new LocationListener() {
+     LocationListener gpsLocationListener = new LocationListener() {
         @RequiresApi(api = Build.VERSION_CODES.O)
         public void onLocationChanged(Location location) {
 
             // 위치 리스너는 위치정보를 전달할 때 호출되므로 onLocationChanged()메소드 안에 위지청보를 처리를 작업을 구현
 
-            String provider = location.getProvider();  // 위치정보
+//            String provider = location.getProvider();  // 위치정보
+            System.out.println("location : "+ location);
             double longitude = location.getLongitude(); // 위도
             double latitude = location.getLatitude(); // 경도
             double altitude = location.getAltitude(); // 고도
 
-            locationText.setText("위치정보 : " + provider + "\n" + "위도 : " + longitude + "\n" + "경도 : " + latitude + "\n" + "고도 : " + altitude);
+            locationText.setText("위치정보 : " +  "\n" + "위도 : " + longitude + "\n" + "경도 : " + latitude + "\n" + "고도 : " + altitude);
 
             walkingRecord.addRecord(new WalkingDTO(longitude, latitude, altitude, getTime(), time, currentSteps));
+
 
         }
 

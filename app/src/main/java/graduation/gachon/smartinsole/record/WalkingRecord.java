@@ -4,14 +4,17 @@ import java.util.ArrayList;
 
 public class WalkingRecord {
 
-    ArrayList<WalkingTotalDTO> record = new ArrayList<>();
+    ArrayList<WalkingDTO> record = new ArrayList<>();
 
     public void addRecord(WalkingDTO walking){
-        record.add(new WalkingTotalDTO(walking, WalkingBluetoothRecord.getLeftRecord(),WalkingBluetoothRecord.getRightRecord()));
-        WalkingBluetoothRecord.clear();
+        record.add(walking);
+//        WalkingBluetoothRecord.clear();
+//        WalkingBluetoothRecord.rightRecord.clear();
+//        WalkingBluetoothRecord.leftRecord.clear();
+
     }
 
-    public ArrayList<WalkingTotalDTO> getRecord() {
+    public ArrayList<WalkingDTO> getRecord() {
         return record;
     }
 }

@@ -67,7 +67,7 @@ public class ConnectedThread extends Thread {
 
                             String text = new String(encodedBytes,"UTF-8");
                             readBufferPosition=0;
-                            System.out.println(byteAvailable);
+//                            System.out.println(byteAvailable);
                             if(j<3){
                                 acceleration.add(text);
                                 j++;
@@ -76,7 +76,7 @@ public class ConnectedThread extends Thread {
                                 FsrSensor.add(text);
                                 j++;
                             }
-                            System.out.println("StartActivity.startFlag"+j + StartActivity.flag);
+//                            System.out.println("StartActivity.startFlag"+j + StartActivity.flag);
                             if(j==7&&StartActivity.flag){
                                 WalkingBluetoothDTO walkingBluetoothDTO = new WalkingBluetoothDTO(acceleration,FsrSensor,StartActivity.time);
                                 if(deviceName.contains("Left")){
