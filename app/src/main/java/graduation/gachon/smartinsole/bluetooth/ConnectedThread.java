@@ -76,7 +76,7 @@ public class ConnectedThread extends Thread {
                                 FsrSensor.add(text);
                                 j++;
                             }
-//                            System.out.println("StartActivity.startFlag"+j + StartActivity.flag);
+//                            System.out.println(" xStartActivity.startFlag"+j + StartActivity.flag);
                             if(j==7&&StartActivity.flag){
                                 WalkingBluetoothDTO walkingBluetoothDTO = new WalkingBluetoothDTO(acceleration,FsrSensor,StartActivity.time);
                                 if(deviceName.contains("Left")){

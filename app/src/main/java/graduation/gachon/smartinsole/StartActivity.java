@@ -136,7 +136,7 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
 //                FirebaseAuth mAuth = FirebaseAuth.getInstance();
 //                FirebaseUser user = mAuth.getCurrentUser();
 
-//                mDatabase = FirebaseDatabase.getInstance().getReference();
+                mDatabase = FirebaseDatabase.getInstance().getReference();
 //                데이터베이스에 정보 저장
 //                mDatabase.child(user.getUid())//유저이름
                 mDatabase.child("test")//유저이름
