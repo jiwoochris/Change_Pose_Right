@@ -138,7 +138,6 @@ public class BluetoothSettingActivity extends AppCompatActivity {
             @SuppressLint("MissingPermission")
             @Override
             public void onClick(View view) {
-
                 if (btAdapter.isDiscovering()) {
 
                     btAdapter.cancelDiscovery();
