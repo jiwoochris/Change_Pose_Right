@@ -141,28 +141,28 @@ public class StartActivity extends AppCompatActivity implements SensorEventListe
 //                mDatabase.child(user.getUid())//유저이름
                 mDatabase.child("test")//유저이름
                         .child("record")
-                        .child(record.get(0).getTime().substring(0, 4))//연도
-                        .child(record.get(0).getTime().substring(5, 7))//월
-                        .child(record.get(0).getTime().substring(8, 10))//일
-                        .child(record.get(0).getTime().substring(10) + " ~ " + record.get(record.size() - 1).getTime().substring(10))//시작 시간
+                        .child(WalkingBluetoothRecord.leftRecord.get(0).getTime().substring(0, 4))//연도
+                        .child(WalkingBluetoothRecord.leftRecord.get(0).getTime().substring(5, 7))//월
+                        .child(WalkingBluetoothRecord.leftRecord.get(0).getTime().substring(8, 10))//일
+                        .child(WalkingBluetoothRecord.leftRecord.get(0).getTime().substring(10) + " ~ " + WalkingBluetoothRecord.leftRecord.get(WalkingBluetoothRecord.leftRecord.size() - 1).getTime().substring(10))//시작 시간
                         .child("PD")
                         .setValue(record);//데이터
 
                 mDatabase.child("test")//유저이름
                         .child("record")
-                        .child(record.get(0).getTime().substring(0, 4))//연도
-                        .child(record.get(0).getTime().substring(5, 7))//월
-                        .child(record.get(0).getTime().substring(8, 10))//일
-                        .child(record.get(0).getTime().substring(10) + " ~ " + record.get(record.size() - 1).getTime().substring(10))//시작 시간
+                        .child(WalkingBluetoothRecord.leftRecord.get(0).getTime().substring(0, 4))//연도
+                        .child(WalkingBluetoothRecord.leftRecord.get(0).getTime().substring(5, 7))//월
+                        .child(WalkingBluetoothRecord.leftRecord.get(0).getTime().substring(8, 10))//일
+                        .child(WalkingBluetoothRecord.leftRecord.get(0).getTime().substring(10) + " ~ " + WalkingBluetoothRecord.leftRecord.get(WalkingBluetoothRecord.leftRecord.size() - 1).getTime().substring(10))//시작 시간
                         .child("BDLeft")
                         .setValue(leftRecord);//데이터
 
                 mDatabase.child("test")//유저이름
                         .child("record")
-                        .child(record.get(0).getTime().substring(0, 4))//연도
-                        .child(record.get(0).getTime().substring(5, 7))//월
-                        .child(record.get(0).getTime().substring(8, 10))//일
-                        .child(record.get(0).getTime().substring(10) + " ~ " + record.get(record.size() - 1).getTime().substring(10))//시작 시간
+                        .child(WalkingBluetoothRecord.leftRecord.get(0).getTime().substring(0, 4))//연도
+                        .child(WalkingBluetoothRecord.leftRecord.get(0).getTime().substring(5, 7))//월
+                        .child(WalkingBluetoothRecord.leftRecord.get(0).getTime().substring(8, 10))//일
+                        .child(WalkingBluetoothRecord.leftRecord.get(0).getTime().substring(10) + " ~ " + WalkingBluetoothRecord.leftRecord.get(WalkingBluetoothRecord.leftRecord.size() - 1).getTime().substring(10))//시작 시간
                         .child("BDRight")
                         .setValue(rightRecord);//데이터
 

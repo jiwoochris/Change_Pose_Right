@@ -1,11 +1,16 @@
 package graduation.gachon.smartinsole.bluetooth;
 
 import android.bluetooth.BluetoothSocket;
+import android.os.Build;
 import android.os.SystemClock;
+
+import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import graduation.gachon.smartinsole.StartActivity;
@@ -41,6 +46,7 @@ public class ConnectedThread extends Thread {
         mmOutStream = tmpOut;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void run() {
 
@@ -49,7 +55,7 @@ public class ConnectedThread extends Thread {
                 int byteAvailable = mmInStream.available();
                 if (byteAvailable > 0) {
                     byte[] bytes = new byte[byteAvailable];
-                    SystemClock.sleep(100); //pause and wait for rest of data. Adjust this depending on your sending speed.
+
                     mmInStream.read(bytes);
 
                     int j=0;
@@ -65,17 +71,21 @@ public class ConnectedThread extends Thread {
                             String text = new String(encodedBytes,"UTF-8");
                             readBufferPosition=0;
 //                            System.out.println(byteAvailable);
-                            if(j<3){
+                            if(j<2){
                                 acceleration.add(text);
                                 j++;
                             }
-                            else if (j>=3){
+                            else if (j>=2){
                                 FsrSensor.add(text);
                                 j++;
                             }
 //                            System.out.println(" xStartActivity.startFlag"+j + StartActivity.flag);
+                            System.out.println("acceleration = " + acceleration);
+                            System.out.println("FsrSensor = " + FsrSensor);
+                            System.out.println("StartActivity.time = " + StartActivity.time);
                             if(j==7&&StartActivity.flag){
-                                WalkingBluetoothDTO walkingBluetoothDTO = new WalkingBluetoothDTO(acceleration,FsrSensor,StartActivity.time);
+                                WalkingBluetoothDTO walkingBluetoothDTO = new WalkingBluetoothDTO(acceleration,FsrSensor,getTime());
+                                WalkingBluetoothRecord.leftRecord.add(walkingBluetoothDTO);
                                 if(deviceName.contains("Left")){
                                     WalkingBluetoothRecord.leftRecord.add(walkingBluetoothDTO);
                                 }
@@ -113,5 +123,12 @@ public class ConnectedThread extends Thread {
             mmSocket.close();
         } catch (IOException e) {
         }
+    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private String getTime() {
+
+        LocalDateTime now = LocalDateTime.now();
+
+        return now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 }
