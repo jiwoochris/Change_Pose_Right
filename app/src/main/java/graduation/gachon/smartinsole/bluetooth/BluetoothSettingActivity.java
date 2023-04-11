@@ -2,14 +2,17 @@ package graduation.gachon.smartinsole.bluetooth;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -38,7 +41,7 @@ public class BluetoothSettingActivity extends AppCompatActivity {
     private Button btnParied, btnSearch, btnSend;
     private ListView listView;
     private Set<BluetoothDevice> pairedDevices;
-    private ArrayAdapter<String> btArrayAdapter ;
+    private ArrayAdapter<String> btArrayAdapter;
     private ArrayList<String> deviceAddressArray = new ArrayList<>();
     private BluetoothAdapter btAdapter;
     private final static int REQUEST_ENABLE_BT = 1;
@@ -48,6 +51,42 @@ public class BluetoothSettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (this.checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setTitle("블루투스에 대한 액세스가 필요합니다");
+                builder.setMessage("어플리케이션이 블루투스를 감지 할 수 있도록 위치 정보 액세스 권한을 부여하십시오.");
+                builder.setPositiveButton(android.R.string.ok, null);
+
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        requestPermissions(new String[]{Manifest.permission.BLUETOOTH_SCAN}, 2 );
+                    }
+                });
+                builder.show();
+            }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (this.checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setTitle("블루투스에 대한 액세스가 필요합니다");
+                builder.setMessage("어플리케이션이 블루투스를 연결 할 수 있도록 위치 정보 액세스 권한을 부여하십시오.");
+                builder.setPositiveButton(android.R.string.ok, null);
+
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        requestPermissions(new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 3 );
+                    }
+                });
+                builder.show();
+            }
+        }
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         System.out.println("btAdapter = " + btAdapter);
@@ -73,25 +112,57 @@ public class BluetoothSettingActivity extends AppCompatActivity {
 
         listView.setOnItemClickListener(new myOnItemClickListener());
 
+        btnParied.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("MissingPermission")
+            @Override
+            public void onClick(View view) {
+
+                btArrayAdapter.clear();
+                if (deviceAddressArray != null && !deviceAddressArray.isEmpty()) {
+                    deviceAddressArray.clear();
+                }
+
+                pairedDevices = btAdapter.getBondedDevices();
+                if (pairedDevices.size() > 0) {
+                    // There are paired devices. Get the name and address of each paired device.
+                    for (BluetoothDevice device : pairedDevices) {
+                        String deviceName = device.getName();
+                        String deviceHardwareAddress = device.getAddress(); // MAC address
+                        btArrayAdapter.add(deviceName);
+                        deviceAddressArray.add(deviceHardwareAddress);
+                    }
+                }
+            }
+        });
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("MissingPermission")
+            @Override
+            public void onClick(View view) {
+
+                if (btAdapter.isDiscovering()) {
+
+                    btAdapter.cancelDiscovery();
+                } else {
+                    if (btAdapter.isEnabled()) {
+                        btAdapter.startDiscovery();
+                        btArrayAdapter.clear();
+                        if (deviceAddressArray != null && !deviceAddressArray.isEmpty()) {
+                            deviceAddressArray.clear();
+                        }
+                        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+                        registerReceiver(receiver, filter);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "bluetooth not on", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
     }
 
 
     @SuppressLint("MissingPermission")
     public void onClickButtonPaired(View view) {
-        btArrayAdapter.clear();
-        if (deviceAddressArray != null && !deviceAddressArray.isEmpty()) {
-            deviceAddressArray.clear();
-        }
-        pairedDevices = btAdapter.getBondedDevices();
-        if (pairedDevices.size() > 0) {
-            // There are paired devices. Get the name and address of each paired device.
-            for (BluetoothDevice device : pairedDevices) {
-                String deviceName = device.getName();
-                String deviceHardwareAddress = device.getAddress(); // MAC address
-                btArrayAdapter.add(deviceName);
-                deviceAddressArray.add(deviceHardwareAddress);
-            }
-        }
+
     }
 
     @SuppressLint("MissingPermission")

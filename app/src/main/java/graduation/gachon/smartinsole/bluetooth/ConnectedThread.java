@@ -44,9 +44,6 @@ public class ConnectedThread extends Thread {
     @Override
     public void run() {
 
-
-        // bytes returned from read()
-        // Keep listening to the InputStream until an exception occurs
         while (!Thread.currentThread().isInterrupted()) {
             try {
                 int byteAvailable = mmInStream.available();

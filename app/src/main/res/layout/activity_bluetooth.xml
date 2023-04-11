@@ -19,7 +19,6 @@
     <Button
         android:id="@+id/btn_paired"
         android:text="Paired Devices"
-        android:onClick="onClickButtonPaired"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -29,7 +28,6 @@
     <Button
         android:id="@+id/btn_search"
         android:text="Search"
-        android:onClick="onClickButtonSearch"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -39,7 +37,7 @@
     <Button
         android:id="@+id/btn_send"
         android:text="Send a"
-        android:onClick="onClickButtonSend"
+
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
